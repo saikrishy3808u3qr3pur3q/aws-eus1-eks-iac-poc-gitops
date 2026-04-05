@@ -25,11 +25,11 @@ spec:
           imagePullPolicy: Always # IfNotPresent - but since we constantly push images and image updater updates it.
           ports:
             - containerPort: 8080
-          envFrom:
-            - secretRef:
-                # pulls every secret from the below named kubernetes secret.
-                # ESO Config - how??
-                name: testing-eks-app-dev-secret
+          # envFrom:
+          #   - secretRef:
+          #       # pulls every secret from the below named kubernetes secret.
+          #       # ESO Config - how??
+          #       name: testing-eks-app-dev-secret
 ---
 apiVersion: v1
 kind: Service
