@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: "https://bitbucket.org/workspace-testing-eks/testing-eks-gitops-repo.git"
+    repoURL: "https://github.com/saikrishy3808u3qr3pur3q/aws-eus1-eks-iac-poc-gitops.git"
     targetRevision: main
     path: k8s-manifest/dev/ingress
   destination:

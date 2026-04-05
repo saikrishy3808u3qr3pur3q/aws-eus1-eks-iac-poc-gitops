@@ -24,7 +24,7 @@ metadata:
     # here the parent gets deleted first (ArgoCD application) later the kubernetes resources created by it gets deleted - (not default) (not recommended in prod) (used for bulk deletions)
   annotations:
     # ones marked - argocd-image-updater.argoproj.io - are for image updater
-    argocd-image-updater.argoproj.io/image-list: myimage=752824437730.dkr.ecr.us-east-1.amazonaws.com/testing-eks-eus1-np-ecr # argocd image updater - looks at this repo
+    argocd-image-updater.argoproj.io/image-list: 762131618860.dkr.ecr.us-east-1.amazonaws.com/eks-non-prod-frontend # argocd image updater - looks at this repo
     # myimage - alias which could be refered later
     argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
     # watch the ECR repo and alias the newest build as myimage.
@@ -43,7 +43,7 @@ spec:
   # defines where my app is 
   source:
   # on this repo - this branch - in this path you could find all the kubernetes resources required.
-    repoURL: "https://bitbucket.org/workspace-testing-eks/testing-eks-gitops-repo.git"
+    repoURL: "https://github.com/saikrishy3808u3qr3pur3q/aws-eus1-eks-iac-poc-gitops.git"
     targetRevision: main
     path: image-updater/dev/user-management
   destination:

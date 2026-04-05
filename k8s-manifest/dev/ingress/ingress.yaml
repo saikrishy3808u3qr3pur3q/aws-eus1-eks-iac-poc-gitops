@@ -14,7 +14,7 @@ metadata:
     # listens to 80 only - uncomment 443 and certificate-arn when domain and cert are available
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS": 443}]'
     # subnets this alb must live in (since it requires multi az)
-    alb.ingress.kubernetes.io/subnets: "subnet-0cf9b378f3aab1127,subnet-063ec9e6bea51c8a5"
+    alb.ingress.kubernetes.io/subnets: "subnet-07eba19fcca55c578,subnet-03a3f00069346129b"
     # the certificate attached to the alb - so no mixed content - knows where to point for ssl cert
     # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:752824437730:certificate/9d1ea4f6-30e1-4386-aee8-2645d7d41e9a"
     #  timeout - if no activity in 4000 seconds - kill the connection (over this time connection is dropped)

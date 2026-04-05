@@ -21,7 +21,7 @@ spec:
           # just an name to the container
         - name: testing-eks-service-container
           # image name - this is what we update in the kustomization yaml - image updater
-          image: 752824437730.dkr.ecr.us-east-1.amazonaws.com/testing-eks-eus1-np-ecr
+          image: 762131618860.dkr.ecr.us-east-1.amazonaws.com/eks-non-prod-frontend
           imagePullPolicy: Always # IfNotPresent - but since we constantly push images and image updater updates it.
           ports:
             - containerPort: 8080
