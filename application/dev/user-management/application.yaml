@@ -1,0 +1,88 @@
+# remember application resource - this yaml
+# other resources - kube things
+
+# always argocd follws this conventions
+# argocd-image-updater.argoproj.io/<key - expected by the tool>
+# │
+# ├── argoproj.io        → domain (who owns it)
+# └── argocd-image-updater → specific tool/component
+
+# in kubernetes
+# metadata - identity / info
+# spec - desired - state
+# status - actual - state
+
+apiVersion: argoproj.io/v1alpha1 
+# argoproj.io - an api group and v1alpha1 is version of API
+kind: Application
+metadata:
+  name: testing-eks-application-dev # application name
+  namespace: argocd # which namespace the application resource lives
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io 
+    # there is an another option : - resources-finalizer.argocd.argoproj.io/background
+    # here the parent gets deleted first (ArgoCD application) later the kubernetes resources created by it gets deleted - (not default) (not recommended in prod) (used for bulk deletions)
+  annotations:
+    # ones marked - argocd-image-updater.argoproj.io - are for image updater
+    argocd-image-updater.argoproj.io/image-list: myimage=752824437730.dkr.ecr.us-east-1.amazonaws.com/testing-eks-eus1-np-ecr # argocd image updater - looks at this repo
+    # myimage - alias which could be refered later
+    argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
+    # watch the ECR repo and alias the newest build as myimage.
+    argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:^[a-zA-Z0-9]{7}-[0-9]+-dev$
+    # under one condition - matches the above regex 
+    #
+    # below mentions - what must be updated on the repo.
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    # git - secret (k8s secrets) - argocd namespace - secret name - git-creds - this must be of kind secret with the name as git-creds in argocd namespace - with stringData - username and password or ssh keys
+    argocd-image-updater.argoproj.io/git-branch: main
+    # which branch to commit changes to
+spec:
+  # defines the rules and constraints of this application
+  project: default
+
+  # defines where my app is 
+  source:
+  # on this repo - this branch - in this path you could find all the kubernetes resources required.
+    repoURL: "https://bitbucket.org/workspace-testing-eks/testing-eks-gitops-repo.git"
+    targetRevision: main
+    path: image-updater/dev/user-management
+  destination:
+  # deploy to the same cluster kubernetes is deployed in - in namespace dev
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    # automated sync - when anything changes in gitops repo - change in kube - else must manual sync
+    automated:
+      # delete any resource not tracked in gitops
+      prune: true
+      # any configurations changes - reverts back
+      selfHeal: true
+    syncOptions:
+    # if target namespace does'nt exist create it
+      - CreateNamespace=true
+
+
+# ## default project configurations
+
+# apiVersion: argoproj.io/v1alpha1
+# kind: AppProject
+# metadata:
+#   name: default
+#   namespace: argocd
+# spec:
+#   description: Default project
+
+#   sourceRepos:
+#     - '*'
+
+#   destinations:
+#     - namespace: '*'
+#       server: '*'
+
+#   clusterResourceWhitelist: # - cluster level resources
+#     - group: '*'
+#       kind: '*'
+
+#   namespaceResourceWhitelist: # - namespace level resources
+#     - group: '*' # - basically the api version
+#       kind: '*' # - type of resource

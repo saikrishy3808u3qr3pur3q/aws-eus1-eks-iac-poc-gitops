@@ -1,0 +1,58 @@
+# This says this is an kubernetes networking resource
+apiVersion: networking.k8s.io/v1
+# specifically an ingress
+kind: Ingress
+metadata:
+  name: testing-eks-ingress-np
+  namespace: dev
+  # alb - ingress doesnt understand it - but the alb cloud controller understands it
+  annotations:
+    # create an public alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Directly to pod IPs over node IPs
+    alb.ingress.kubernetes.io/target-type: ip
+    # listens to 80 only - uncomment 443 and certificate-arn when domain and cert are available
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS": 443}]'
+    # subnets this alb must live in (since it requires multi az)
+    alb.ingress.kubernetes.io/subnets: "subnet-0cf9b378f3aab1127,subnet-063ec9e6bea51c8a5"
+    # the certificate attached to the alb - so no mixed content - knows where to point for ssl cert
+    # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:752824437730:certificate/9d1ea4f6-30e1-4386-aee8-2645d7d41e9a"
+    #  timeout - if no activity in 4000 seconds - kill the connection (over this time connection is dropped)
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=4000
+spec:
+  ingressClassName: alb # which ingress controller must handle this resource
+  rules:
+    # - host: dev-alb.testing-eks.com   # uncomment and set host when domain is available
+    - http:
+        paths:
+          - path: /api/v1/user/
+            pathType: Prefix
+            backend:
+              service:
+                name: testing-eks-service-dev-svc
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: testing-eks-frontend-dev-svc
+                port:
+                  number: 3000
+    # - host: uat-alb.testing-eks.com   # uncomment and set host when domain is available
+    # - http:
+    #     paths:
+    #       - path: /api/v1/user/
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: testing-eks-service-uat-svc
+    #             port:
+    #               number: 8080
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: testing-eks-frontend-uat-svc
+    #             port:
+    #               number: 3000

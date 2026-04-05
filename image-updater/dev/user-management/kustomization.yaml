@@ -1,0 +1,12 @@
+# we only maintain this so that we can copy the k8s manifest and create another environment - easily
+# else it updates the actual file and not create an new one
+
+# kustomzation is used to add additional configs or some configs everything must have
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# here are the files and folders to include and the modifications to apply on top of the base environment
+
+resources:
+  # can directly point to your resource here - but must explicity point all here
+  - ../../../k8s-manifest/dev/user-management
+namespace: dev

@@ -1,0 +1,45 @@
+# the api version - group - apps and version - v1 and the kind - is deployment
+apiVersion: apps/v1
+kind: Deployment
+# must be deployed onto dev namespace
+metadata:
+  name: testing-eks-service-dev-deployment
+  namespace: dev
+spec:
+  selector:
+    matchLabels:
+      app: testing-eks-service
+  # Pod Blueprint - template of pods creted by this deployment
+  template:
+    #Pod's metadata
+    metadata:
+      labels:
+        app: testing-eks-service
+    # Pod's spec
+    spec:
+      containers:
+          # just an name to the container
+        - name: testing-eks-service-container
+          # image name - this is what we update in the kustomization yaml - image updater
+          image: 752824437730.dkr.ecr.us-east-1.amazonaws.com/testing-eks-eus1-np-ecr
+          imagePullPolicy: Always # IfNotPresent - but since we constantly push images and image updater updates it.
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                # pulls every secret from the below named kubernetes secret.
+                # ESO Config - how??
+                name: testing-eks-app-dev-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testing-eks-service-dev-svc
+  namespace: dev
+spec:
+  type: ClusterIP # can't use load balencer - since it spins an NLB for it (bypasses ingress rules) (anyone with NLB url can access it), Node port won't work - since container runs in a random port - <node-ip>:<port> - public exposed
+  ports:
+    - port: 8080
+  # route traffic to pods with label
+  selector:
+    app: testing-eks-service
