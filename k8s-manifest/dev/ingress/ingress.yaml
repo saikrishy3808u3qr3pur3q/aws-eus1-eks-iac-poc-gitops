@@ -32,13 +32,13 @@ spec:
                 name: testing-eks-service-dev-svc
                 port:
                   number: 8080
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: testing-eks-frontend-dev-svc
-                port:
-                  number: 3000
+          # - path: /
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: testing-eks-frontend-dev-svc
+          #       port:
+          #         number: 3000
     # - host: uat-alb.testing-eks.com   # uncomment and set host when domain is available
     # - http:
     #     paths:
