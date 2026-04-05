@@ -24,7 +24,7 @@ metadata:
     # here the parent gets deleted first (ArgoCD application) later the kubernetes resources created by it gets deleted - (not default) (not recommended in prod) (used for bulk deletions)
   annotations:
     # ones marked - argocd-image-updater.argoproj.io - are for image updater
-    argocd-image-updater.argoproj.io/image-list: myimage=762131618860.dkr.ecr.us-east-1.amazonaws.com/eks-non-prod-backend
+    argocd-image-updater.argoproj.io/image-list: myimage=762131618860.dkr.ecr.us-east-1.amazonaws.com/eks-non-prod-backend:dev-latest
     # myimage - alias which could be refered later
     argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
     # watch the ECR repo and alias the newest build as myimage.
